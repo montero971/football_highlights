@@ -26,3 +26,14 @@ services:
     App\Services\ScorebatVideoService:
         arguments:
             $apiAccessToken: '%env(API_ACCESS_TOKEN)%'
+            $cacheKey: '%env(CACHE_KEY)%'
+
+    Symfony\Component\Cache\Adapter\RedisAdapter:
+        arguments:
+            $redis: '@redis.connection'
+    
+    redis.connection:
+        class: Redis
+        factory: ['Symfony\Component\Cache\Adapter\RedisAdapter', 'createConnection']
+        arguments:
+            - 'redis://localhost:6379'
