@@ -15,7 +15,7 @@ class ScorebatVideoController extends AbstractController
         $this->scorebatVideoService = $scorebatVideoService;
     }
 
-    #[Route('/', name: 'app_scorebat_video')]
+    #[Route('/scorebat/highlights', name: 'app_scorebat_video', methods: ['GET'])]
     public function index(): JsonResponse
     {
         return $this->json($this->scorebatVideoService->getRecentFeed(), Response::HTTP_OK);
