@@ -1,0 +1,9 @@
+twig:
+    file_name_pattern: '*.twig'
+
+    paths:
+        '/home/jose-manuel/Escritorio/Proyectos/football_highlights/frontend/public/images': images
+when@test:
+    twig:
+        strict_variables: true
+
