@@ -1,0 +1,39 @@
+{% apply inline_css %}
+<style>
+  .container {
+    text-align: center;
+  }
+  .card{
+    display: inline-block;
+  }
+  .imgContainer {
+    display: inline-block;
+    margin-top: 20px;
+    height: 100px;
+    background-color: transparent;
+  }
+  
+  h1 {
+    margin-top: 0px;
+  }
+</style>
+
+<div class="container">
+  <div class="card">
+    <div class="imgContainer">
+      <img src="{{ email.image('@images/logo_football_highlights.png') }}" alt="Logo" />
+    </div>
+    <h1>Welcome {{ username }}!</h1>
+
+    <p>
+      From now on you will be able to enjoy the best football match highlights from all over the world.<br />
+      But right now you are offside.<br /> 
+      We need you to activate your account by clicking on the following link:
+    </p>
+
+    <p>
+      <a href="#">Activate your account</a>
+    </p>
+  </div>
+</div>
+{% endapply %}
