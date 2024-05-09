@@ -6,10 +6,12 @@ use App\Repository\UserRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use JsonSerializable;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
-class User implements JsonSerializable
+class User implements JsonSerializable, PasswordAuthenticatedUserInterface, UserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -18,12 +20,12 @@ class User implements JsonSerializable
 
     #[ORM\Column(name: "firstname", length: 255, nullable: true)]
     #[Assert\NotBlank(message: "Firstname cannot be empty")]
-    #[Assert\Type(type: "string", message: "Firstname must be a string")]
+    #[Assert\Type(type: "string", message: "Firstname cannot be a number nor a symbol")]
     private ?string $firstName = null;
 
     #[ORM\Column(name: "lastname", length: 255, nullable: true)]
     #[Assert\NotBlank(message: "Lastname cannot be empty")]
-    #[Assert\Type(type: "string", message: "Lastname must be a string")]
+    #[Assert\Type(type: "string", message: "Lastname cannot be a number nor a symbol")]
     private ?string $lastName = null;
 
     #[ORM\Column(length: 255)]
@@ -44,7 +46,7 @@ class User implements JsonSerializable
     private ?string $password = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\Type(type: "string", message: "Team must be a {{ type }}")]
+    #[Assert\Type(type: "string", message: "Team cannot be a number nor a symbol")]
     private ?string $team = null;
 
     #[ORM\Column(type: Types::SMALLINT, nullable: true)]
@@ -132,5 +134,20 @@ class User implements JsonSerializable
     public function jsonSerialize()
     {
         return get_object_vars($this);
+    }
+
+    public function getRoles(): array
+    {
+        return ['ROLE_USER'];
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Optional implementation: This function delete user's credentials
+    }
+
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->id;
     }
 }

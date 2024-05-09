@@ -24,11 +24,15 @@ class UserSignUpController extends AbstractController
     #[Route('/signup', name: 'app_user_sign_up', methods: ['POST'])]
     public function index(Request $request): JsonResponse
     {
-        $body = json_decode($request->getContent(), true);
-        $newUser = $this->userSignUpService->userSignUp($body);
+        try {
+            $body = json_decode($request->getContent(), true);
+            $newUser = $this->userSignUpService->userSignUp($body);
 
-        $this->sendGridService->sendWelcomeEmail($newUser->getEmail(), $newUser->getFirstName());
+            $this->sendGridService->sendWelcomeEmail(/*$newUser->getEmail()*/'josemanuel.montero@agiliacenter.com', $newUser[0]->getFirstName());
 
-        return $this->json(['New user:' => $newUser], Response::HTTP_CREATED);
+            return $this->json(['Token:' => $newUser[1]], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return $this->json(['error' => $e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
 }
