@@ -54,6 +54,14 @@ class User implements JsonSerializable, PasswordAuthenticatedUserInterface, User
     #[Assert\Range(min: 0, max: 1, notInRangeMessage: "Subscribed must be {{ min }} or {{ max }}")]
     private ?int $subscribed = null;
 
+    #[ORM\Column(type: Types::SMALLINT)]
+    #[Assert\Type(type: "int", message: "Subscribed must be a {{ type }} (0 o 1)")]
+    #[Assert\Range(min: 0, max: 1, notInRangeMessage: "Subscribed must be {{ min }} or {{ max }}")]
+    private ?int $active = null;
+
+    #[ORM\Column(length: 500)]
+    private ?string $activationToken = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -100,7 +108,7 @@ class User implements JsonSerializable, PasswordAuthenticatedUserInterface, User
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(?string $password): static
     {
         $this->password = $password;
 
@@ -149,5 +157,29 @@ class User implements JsonSerializable, PasswordAuthenticatedUserInterface, User
     public function getUserIdentifier(): string
     {
         return (string) $this->id;
+    }
+
+    public function getActive(): ?int
+    {
+        return $this->active;
+    }
+
+    public function setActive(int $active): static
+    {
+        $this->active = $active;
+
+        return $this;
+    }
+
+    public function getActivationToken(): ?string
+    {
+        return $this->activationToken;
+    }
+
+    public function setActivationToken(string $activationToken): static
+    {
+        $this->activationToken = $activationToken;
+
+        return $this;
     }
 }
