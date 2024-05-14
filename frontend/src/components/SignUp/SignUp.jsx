@@ -22,7 +22,7 @@ function SignUp() {
   const [team, setTeam] = useState("");
   const [checked, setChecked] = useState(false);
   const [submitExecuted, setSubmitExecuted] = useState(false);
-  const [formErrors, setFormErrors] = useState({ firstName: "" });
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (submitExecuted) {
@@ -38,7 +38,7 @@ function SignUp() {
     setPassword("");
     setTeam("");
     setChecked(false);
-    setFormErrors({ firstName: "" });
+    setErrorMessage("");
   };
 
   const passwordHeader = <h4>Pick a password</h4>;
@@ -57,11 +57,6 @@ function SignUp() {
 
   const handleSubmit = async () => {
     try {
-      if (!firstName) {
-        setFormErrors({ firstName: "First name is required" });
-        return;
-      }
-      
       const response = await fetch("https://localhost:8000/user/signup", {
         method: "POST",
         headers: {
@@ -80,10 +75,13 @@ function SignUp() {
         notifySignUpSuccess();
         resetForm();
       } else {
-        console.error("Error al registrar usuario", response.statusText);
+        const responseData = await response.json();
+        setErrorMessage(responseData.error);
       }
     } catch (error) {
-      console.error("Error en la solicitud:", error.message);
+      setErrorMessage("Error during request: " + error.message);
+    } finally {
+      setSubmitExecuted(false);
     }
   };
 
@@ -105,7 +103,6 @@ function SignUp() {
             onChange={(e) => setFirstName(e.target.value)}
             label="Firstname"
             iconClassName="pi pi-user"
-            error={formErrors.firstName}
           />
           <CustomFloatLabel
             id="lastname"
@@ -156,12 +153,16 @@ function SignUp() {
           <div className="signUpBtn">
             <Button
               label="Sign Up"
-              icon="pi pi-check"
-              onClick={() => {
-                handleButtonClick();
-              }}
+              onClick={() => handleButtonClick()}
+              disabled={submitExecuted}
             />
           </div>
+          {errorMessage && (
+            <p className="errorMessage">
+              <i className="pi pi-exclamation-circle"></i>
+              {errorMessage}
+            </p>
+          )}
         </div>
       </div>
     </PrimeReactProvider>

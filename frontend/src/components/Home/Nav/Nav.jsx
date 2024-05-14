@@ -6,14 +6,21 @@ import { useNavigate } from "react-router-dom";
 
 function Nav() {
   const navigate = useNavigate();
-  const handleClick = () => navigate("/signup");
+  const handleClickToSignUp = () => navigate("/signup");
+  const handleClickToSignIn = () => navigate("/signin");
 
   const items = [
     {
-      label: "SignUp",
+      label: "Sign In",
       icon: "pi pi-pencil",
       className: "menu-item",
-      command: () => handleClick(),
+      command: () => handleClickToSignIn(),
+    },
+    {
+      label: "Sign Up",
+      icon: "pi pi-pencil",
+      className: "menu-item",
+      command: () => handleClickToSignUp(),
     },
   ];
 

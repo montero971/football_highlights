@@ -2,25 +2,48 @@
   display: flex;
   flex-direction: row-reverse;
   margin-right: 30px;
-  height: 50px;
+  height: 60px;
   font-weight: bold;
 }
 
-.menu-item{
+.menu-item {
   font-weight: bold;
+  margin-right: 10px;
 }
 
-.p-menubar{
-  background-color: yellow;
-}
-
-.p-menubar:hover{
-  background-color: white;
+.menu-item:hover {
   transform: scale(1.1);
+  margin-left: 10px;
+  margin-right: 15px;
+  .p-menuitem-content {
+    border-bottom: transparent;
+    border-top: transparent;
+  }
 }
 
-.pi-pencil, .p-menuitem-text{
-  color: black;
+.p-menuitem-content {
+  border-bottom: solid;
+  border-top: solid;
+  border-color: yellow;
+}
+
+.p-menubar {
+  border-color: transparent;
+  margin-top: 5px;
+  background-color: transparent;
+}
+
+.p-menuitem-content:hover {
+  background-color: yellow;
+  .pi-pencil,
+  .p-menuitem-text {
+    color: black;
+    font-weight: bold;
+  }
+}
+
+.pi-pencil,
+.p-menuitem-text {
+  color: white;
   font-weight: bold;
 }
-
