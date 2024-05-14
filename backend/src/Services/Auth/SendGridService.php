@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Auth;
 
-use DateTimeZone;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\MailerInterface;
 
@@ -15,7 +14,7 @@ class SendGridService
         $this->mailer = $mailer;
     }
 
-    public function sendWelcomeEmail(string $recipientEmail, string $userName)
+    public function sendWelcomeEmail(string $recipientEmail, string $userName, string $activationToken)
     {
         $email = (new TemplatedEmail())
             ->from('josemanuel.montero@agiliacenter.com')
@@ -24,6 +23,7 @@ class SendGridService
             ->htmlTemplate('emails/signup.html.twig')
             ->context([
                 'username' => $userName,
+                'activationToken' => $activationToken,
             ]);
 
         $this->mailer->send($email);

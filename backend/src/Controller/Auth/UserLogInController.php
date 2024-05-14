@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Auth;
 
-use App\Services\UserLogInService;
+use App\Services\Auth\UserLogInService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;

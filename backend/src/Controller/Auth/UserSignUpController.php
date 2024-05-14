@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Auth;
 
-use App\Services\SendGridService;
-use App\Services\UserSignUpService;
+use App\Services\Auth\SendGridService;
+use App\Services\Auth\UserSignUpService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -28,9 +28,9 @@ class UserSignUpController extends AbstractController
             $body = json_decode($request->getContent(), true);
             $newUser = $this->userSignUpService->userSignUp($body);
 
-            $this->sendGridService->sendWelcomeEmail(/*$newUser->getEmail()*/'josemanuel.montero@agiliacenter.com', $newUser[0]->getFirstName());
+            $this->sendGridService->sendWelcomeEmail(/*$newUser->getEmail()*/'josemanuel.montero@agiliacenter.com', $newUser->getFirstName(), $newUser->getActivationToken());
 
-            return $this->json(['Token:' => $newUser[1]], Response::HTTP_CREATED);
+            return $this->json(['New User:' => $newUser], Response::HTTP_CREATED);
         } catch (\Exception $e) {
             return $this->json(['error' => $e->getMessage()], $e->getCode() ?: Response::HTTP_INTERNAL_SERVER_ERROR);
         }

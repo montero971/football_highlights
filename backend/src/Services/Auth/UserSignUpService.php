@@ -2,16 +2,19 @@
 
 declare(strict_types=1);
 
-namespace App\Services;
+namespace App\Services\Auth;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Exception;
 use Lexik\Bundle\JWTAuthenticationBundle\Services\JWTTokenManagerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserSignUpService
 {
+    const INACTIVE = 0;
+
     public function __construct(
         private UserRepository $userRepository,
         private ValidatorInterface $validator,
@@ -22,7 +25,7 @@ class UserSignUpService
         $this->passwordHasher = $passwordHasher;
         $this->jwtManager = $jwtManager;
     }
-    public function userSignUp(array $body): array
+    public function userSignUp(array $body): User
     {
         $user = new User();
         $user->setFirstName($body['firstName']);
@@ -30,11 +33,20 @@ class UserSignUpService
         $user->setTeam($body['team']);
         $user->setSubscribed((int)$body['subscribed']);
 
+        $this->suscribedWithEmptyTeam($user->getSubscribed(), $user->getTeam());
+
+        $user->setActive(self::INACTIVE);
+
         if ($this->isUserAlreadyRegistered($body['email'])) throw new \Exception('Email already exists', 409);
 
         $user->setEmail($body['email']);
+        if ($body['password'] === '') {
+            $user->setPassword(null);
+        } else {
+            $user->setPassword($this->encodePassword($user, $body['password']));
+        }
+        $user->setActivationToken($this->jwtManager->create($user));
 
-        $user->setPassword($this->encodePassword($user, $body['password']));
 
         $errors = $this->validator->validate($user);
 
@@ -48,14 +60,20 @@ class UserSignUpService
             throw new \Exception(implode("\n", $errorMessages));
         }
 
-        $newUser = $this->userRepository->save($user);
-
-        return [$newUser, $this->jwtManager->create($newUser)];
+        return $this->userRepository->save($user);
     }
 
     public function encodePassword(User $user, string $password): string
     {
         return $this->passwordHasher->hashPassword($user, $password);
+    }
+
+    public function suscribedWithEmptyTeam(int $suscribed, string $team): bool
+    {
+        if ($suscribed === 1 && empty($team))
+            throw new Exception('You have ticked the box to receive notifications, but we do not know your team, please, let us know your colours');
+
+        return false;
     }
 
     public function isUserAlreadyRegistered(string $email): bool
